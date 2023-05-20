@@ -3,6 +3,8 @@ import { View, StyleSheet, Text, TextInput } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { createUser as createUserMutation } from './graphql/mutations';
+import { signIn } from './cognito';
+
 
 const CreateAccountScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -20,13 +22,7 @@ const CreateAccountScreen = ({ navigation }) => {
       }
   
       // Create user account using AWS Amplify
-      const user = await Auth.signUp({
-        username: email,
-        password: password,
-        attributes: {
-          email: email,
-        },
-      });
+      const user = await signIn(email, password);
   
       // Store additional user data in AWS
       await API.graphql(

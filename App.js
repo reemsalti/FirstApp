@@ -5,6 +5,7 @@ import WelcomeScreen from './WelcomeScreen';
 import GetStartedScreen from './GetStartedScreen';
 import CreateAccountScreen from './CreateAccountScreen';
 import LoginScreen from './LoginScreen';
+import FitAssistantScreen from './views/dashboard'
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,11 @@ const App = () => {
           name="Login"
           component={LoginScreen}
           options={{ title: 'Log In' }}
+        />
+        <Stack.Screen
+          name="Dashboard"
+          component={FitAssistantScreen}
+          options={{ title: 'Dashboard' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

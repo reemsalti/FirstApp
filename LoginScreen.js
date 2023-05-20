@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
 import { Button } from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
+import { login } from './cognito';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
-    // Perform login logic with email and password
-  };
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+      // Login successful, perform further actions if needed
+    } catch (error) {
+      // Handle error in login
+      console.error('Error logging in:', error);
+    }
   };
 
   return (
@@ -24,23 +26,15 @@ const LoginScreen = () => {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        autoCapitalize='none'
       />
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.passwordInput}
-          placeholder="Password"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <Ionicons
-          name={showPassword ? 'eye' : 'eye-off'}
-          size={24}
-          color="gray"
-          style={styles.eyeIcon}
-          onPress={togglePasswordVisibility}
-        />
-      </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
       <Button mode="contained" onPress={handleLogin}>
         Log In
       </Button>
@@ -66,21 +60,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 16,
     backgroundColor: '#fff',
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: 16,
-    backgroundColor: '#fff',
-    borderRadius: 4,
-  },
-  passwordInput: {
-    flex: 1,
-    padding: 10,
-  },
-  eyeIcon: {
-    padding: 10,
   },
 });
 

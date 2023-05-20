@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
+
 
 function FitAssistantScreen() {
   const signOut = () => {
