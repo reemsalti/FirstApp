@@ -1,166 +1,40 @@
-const dotenv = require('dotenv');
-dotenv.config();
-const openai = require('openai');
-let fetch;
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import WelcomeScreen from './WelcomeScreen';
+import GetStartedScreen from './GetStartedScreen';
+import CreateAccountScreen from './CreateAccountScreen';
+import LoginScreen from './LoginScreen';
 
-(async () => {
-  fetch = (await import('node-fetch')).default;
-})();
+const Stack = createNativeStackNavigator();
 
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Welcome"
+          component={WelcomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="GetStarted"
+          component={GetStartedScreen}
+          options={{ title: 'Get Started' }}
+        />
+        <Stack.Screen
+          name="CreateAccount"
+          component={CreateAccountScreen}
+          options={{ title: 'Create Account' }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ title: 'Log In' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const AWS = require('aws-sdk');
-const path = require('path');
-const { registerUser, authenticateUser } = require('./cognito.js');
-
-const cognito = require('./cognito.js');
-const app = express();
-const { parsePhoneNumber } = require('libphonenumber-js');
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.js')) {
-      res.setHeader('Content-Type', 'application/javascript');
-    }
-  },
-}));
-app.use(session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: true
-}));
-
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-app.get('/', (req, res) => {
-  res.render('login');
-});
-
-app.get('/login', (req, res) => {
-  res.render('login');
-});
-
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const authResult = await cognito.authenticateUser(email, password);
-    // Handle successful authentication here, e.g., set a session or a cookie
-    res.render('dashboard'); // Updated this line
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(400).send({ message: error.message });
-  }
-});
-
-
-
-app.get('/create-user', (req, res) => {
-  res.render('create-user');
-});
-
-
-app.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/login');
-});
-
-
-app.post('/create-user', async (req, res) => {
-  const { firstname, lastname, email, phone, interest, password, gender, birthday } = req.body;
-
-  const phoneNumber = parsePhoneNumber(phone, 'US'); // 'US' is default country for parsing
-  
-  if (!phoneNumber || !phoneNumber.isValid()) {
-    console.error('Invalid phone number:', phone);
-    res.status(400).json({ message: 'Invalid phone number format.' });
-    return;
-  }
-  
-
-  // format the phone number to the E.164 format
-  let formattedPhone = phoneNumber.formatInternational();
-
-  console.log(`formattedPhone: ${formattedPhone}`);
-  console.log(`phone: ${phone}`);
-  formattedPhone = formattedPhone.replace(/\s/g, "");
-  console.log(`formattedPhone (2): ${formattedPhone}`);
-  try {
-    await registerUser(firstname, lastname, email, formattedPhone, interest, password, gender, birthday);
-    res.redirect('/dashboard');
-  } catch (error) {
-    console.error('Create user error:', error);
-    res.status(400).json({ message: error.message });
-    console.log('Response status:', res.statusCode, 'headers:', res.getHeaders()); // Add this line
-  }
-});
-
-app.get('/dashboard', (req, res) => {
-  // Check user authentication and authorization here
-  res.render('dashboard'); // Replace 'dashboard' with the actual name of your dashboard view file
-});
-
-app.post('/api/chat', async (req, res) => {
-  const { userMessage } = req.body;
-  console.log('Received userMessage:', userMessage); // Add this line
-  const messages = [
-    {
-      role: 'assistant',
-      content: "AI Fitness Assistant"
-    },
-    {
-      role: 'user',
-      content: userMessage
-    }
-  ];
-
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages,
-      max_tokens: 150,
-      temperature: 0.5,
-    })
-  };
-
-  try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', options);
-    const apiResponse = await response.json();
-    console.log('API Response:', apiResponse); // Log the API response
-
-    if (apiResponse.choices && apiResponse.choices.length > 0) {
-      const aiResponse = apiResponse.choices[0].message.content.trim();
-      res.json({ response: aiResponse });
-    } else {
-      console.error('API chat error: Unexpected response format');
-      res.status(500).json({ response: 'An error occurred while processing your message.' });
-    }
-  } catch (error) {
-    console.error('API chat error:', error);
-    res.status(500).json({ response: 'An error occurred while processing your message.' });
-  }
-});
-
-
-
-
-
-
-
-
-
-
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
-});
+export default App;
