@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
-import { Button, IconButton } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { createUser as createUserMutation } from './graphql/mutations';
-import { signIn } from './cognito';
-
+import { Ionicons } from '@expo/vector-icons';
 
 const CreateAccountScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,6 +12,7 @@ const CreateAccountScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [userError, setUserError] = useState('');  // New state variable for user error message
 
   const handleCreateAccount = async () => {
     try {
@@ -20,28 +20,39 @@ const CreateAccountScreen = ({ navigation }) => {
         setPasswordError(true);
         return;
       }
-  
-      // Create user account using AWS Amplify
-      const user = await signIn(email, password);
-  
-      // Store additional user data in AWS
+
+      // Reset user error
+      setUserError('');
+
+      const { user } = await Auth.signUp({
+        username: email,
+        password: password,
+        attributes: {
+          email: email,
+        }
+      });
+
       await API.graphql(
         graphqlOperation(createUserMutation, {
           input: {
             id: user.userSub,
             email: email,
-            // Add additional data fields as needed
           },
         })
       );
   
-      // Account creation successful, navigate to the next screen
       navigation.navigate('ThankYou');
     } catch (error) {
-      // Handle error in account creation
-      console.error('Error creating account:', error);
+      if (error.code === 'UsernameExistsException') {
+        // Set user error message
+        setUserError('An account with this email already exists');
+      } else {
+        // Handle other errors
+        console.error('Error creating account:', error);
+      }
     }
   };
+
   
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

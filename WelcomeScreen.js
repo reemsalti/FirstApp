@@ -1,19 +1,58 @@
-import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { Button } from 'react-native-paper';
+import React, { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
+import AnimatedBubble from './assets/AnimatedBubble';
+
+const colors = ['#AED6F1', '#FADBD8', '#E8DAEF', '#D5F5E3', '#FDEDEC'];
+const sizes = [50, 75, 100, 125, 150];
+
+const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const getRandomDelay = () => Math.random() * 1000;
 
 const WelcomeScreen = ({ navigation }) => {
   const handleGetStarted = () => {
     navigation.navigate('GetStarted');
   };
 
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 3000,
+        useNativeDriver: true,
+      }),
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(translateY, {
+            toValue: -10,
+            duration: 3000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateY, {
+            toValue: 10,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+        ]),
+      ),
+    ]).start();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to My App</Text>
-      <Button mode="contained" onPress={handleGetStarted}>
-        Get Started
-      </Button>
-    </View>
+    <TouchableOpacity style={styles.container} onPress={handleGetStarted}>
+      {Array.from({ length: 20 }).map((_, i) => (
+        <AnimatedBubble
+          key={i}
+          color={getRandomElement(colors)}
+          size={getRandomElement(sizes)}
+          delay={getRandomDelay()}
+        />
+      ))}
+      <Animated.Text style={[styles.title, { opacity, transform: [{ translateY }] }]}>Welcome</Animated.Text>
+      <Animated.Text style={[styles.instructions, { opacity }]}>Tap anywhere to get started</Animated.Text>
+    </TouchableOpacity>
   );
 };
 
@@ -22,13 +61,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#AED6F1',
   },
   title: {
-    fontSize: 24,
+    fontSize: 34,
     fontWeight: 'bold',
-    marginBottom: 24,
+    position: 'absolute',
+    color: '#fff',
+  },
+  instructions: {
+    fontSize: 16,
+    position: 'absolute',
+    bottom: 50,
+    color: '#fff',
   },
 });
 
