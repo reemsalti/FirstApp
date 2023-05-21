@@ -1,15 +1,26 @@
 {
-  "dev": {
+  "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-firstapp-dev-221222-authRole",
-      "UnauthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapp-dev-221222-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapp-dev-221222-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-firstapp-dev-221222-deployment",
-      "UnauthRoleName": "amplify-firstapp-dev-221222-unauthRole",
-      "StackName": "amplify-firstapp-dev-221222",
-      "StackId": "arn:aws:cloudformation:us-east-1:769349007574:stack/amplify-firstapp-dev-221222/ef0a2be0-f77c-11ed-82d0-0a70f4582bdb",
-      "AmplifyAppId": "dmtse00034p1i"
+      "AuthRoleName": "amplify-firstapptroubleshoot-staging-141033-authRole",
+      "UnauthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapptroubleshoot-staging-141033-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapptroubleshoot-staging-141033-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-firstapptroubleshoot-staging-141033-deployment",
+      "UnauthRoleName": "amplify-firstapptroubleshoot-staging-141033-unauthRole",
+      "StackName": "amplify-firstapptroubleshoot-staging-141033",
+      "StackId": "arn:aws:cloudformation:us-east-2:769349007574:stack/amplify-firstapptroubleshoot-staging-141033/407560d0-f7e1-11ed-a679-069480f21805",
+      "AmplifyAppId": "d1a3rgxhjye4b1"
+    },
+    "categories": {
+      "auth": {
+        "FirstApptroubleshoot": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1a3rgxhjye4b1",
+          "type": "manual"
+        }
+      }
     }
   }
 }

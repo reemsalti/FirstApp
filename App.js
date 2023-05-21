@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import WelcomeScreen from './WelcomeScreen';
-import GetStartedScreen from './GetStartedScreen';
-import CreateAccountScreen from './CreateAccountScreen';
-import LoginScreen from './LoginScreen';
+import Amplify from '@aws-amplify/core';
+import awsconfig from './FirstApp/aws-exports';
+import WelcomeScreen from './screens/WelcomeScreen';
+import GetStartedScreen from './screens/GetStartedScreen';
+import CreateAccountScreen from './screens/CreateAccountScreen';
+import LoginScreen from './screens/LoginScreen';
 import FitAssistantScreen from './views/dashboard'
+import ConfirmSignUpScreen from './screens/ConfirmSignUpScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+
+Amplify.configure(awsconfig);
 
 const Stack = createNativeStackNavigator();
 
@@ -21,23 +27,29 @@ const App = () => {
         <Stack.Screen
           name="GetStarted"
           component={GetStartedScreen}
-          options={{ title: 'Get Started' }}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
           name="CreateAccount"
           component={CreateAccountScreen}
-          options={{ title: 'Create Account' }}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
-          name="Login"
+          name="LoginScreen"
           component={LoginScreen}
-          options={{ title: 'Log In' }}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
           name="Dashboard"
           component={FitAssistantScreen}
-          options={{ title: 'Dashboard' }}
+          options={{ headerShown: true }}
         />
+        <Stack.Screen 
+        name="ConfirmSignUpScreen" 
+        component={ConfirmSignUpScreen} />
+        <Stack.Screen 
+        name="ForgotPasswordScreen" 
+        component={ForgotPasswordScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,3 +1,7 @@
+//TO DO 
+
+// Fix directory structure -- aws-exports.js should be in the root of the project, it's currently in its own folder
+
 // old App.js code
 // const dotenv = require('dotenv');
 // dotenv.config();

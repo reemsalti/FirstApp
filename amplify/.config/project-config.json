@@ -1,17 +1,17 @@
 {
-  "projectName": "FirstApp",
+  "providers": [
+    "awscloudformation"
+  ],
+  "projectName": "FirstApptroubleshoot",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {
     "framework": "react-native",
     "config": {
-      "SourceDir": "src",
+      "SourceDir": "FirstApp",
       "DistributionDir": "/",
-      "BuildCommand": "npm run-script build",
-      "StartCommand": "npm run-script start"
+      "BuildCommand": "npm build",
+      "StartCommand": "npm start"
     }
-  },
-  "providers": [
-    "awscloudformation"
-  ]
+  }
 }
