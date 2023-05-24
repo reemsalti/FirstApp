@@ -14,7 +14,7 @@ const GetStartedScreen = ({ navigation }) => {
   };
 
   const handleLogin = () => {
-    navigation.navigate('Login');
+    navigation.navigate('LoginScreen');
   };
 
   return (

@@ -1,20 +1,28 @@
+// LoginScreen.js
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
 import { Button } from 'react-native-paper';
-import { login } from '../cognito';
+import { Auth } from 'aws-amplify';
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async () => {
     try {
-      await login(email, password);
-
-      // Login successful, perform further actions if needed
+      await Auth.signIn(email, password);
+      navigation.navigate('DashboardScreen');
     } catch (error) {
-      // Handle error in login
-      console.error('Error logging in:', error);
+      console.error('Error during sign in', error);
+      if (error.code === 'UserNotFoundException' || error.code === 'NotAuthorizedException') {
+        setErrorMessage('Incorrect username or password');
+      } else if (error.code === 'UserNotConfirmedException') { // User hasn't confirmed their account
+        // Navigate to the ConfirmSignUpScreen
+        navigation.navigate('ConfirmSignUp', { email });
+      } else {
+        setErrorMessage('An error occurred while signing in');
+      }
     }
   };
 
@@ -26,15 +34,16 @@ const LoginScreen = () => {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        autoCapitalize='none'
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
-        secureTextEntry
+        secureTextEntry={true}
         value={password}
         onChangeText={setPassword}
       />
+      {errorMessage !== '' && <Text style={styles.errorText}>{errorMessage}</Text>}
       <Button mode="contained" onPress={handleLogin}>
         Log In
       </Button>
