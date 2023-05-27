@@ -1,42 +1,55 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import { Button } from 'react-native-paper';
-import Modal from 'react-native-modal';
-import { Auth, API, graphqlOperation } from 'aws-amplify';
-import { createUser as createUserMutation } from '../graphql/mutations';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import { Button } from "react-native-paper";
+import Modal from "react-native-modal";
+import { Auth, API, graphqlOperation } from "aws-amplify";
+import { createUser as createUserMutation } from "../graphql/mutations";
+import { Ionicons } from "@expo/vector-icons";
 
-const CreateAccountScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+const CreateAccountScreen = ({ navigation, route }) => {
+  const { firstName, lastName } = route.params;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [userError, setUserError] = useState('');
+  const [userError, setUserError] = useState("");
   const [isModalVisible, setModalVisible] = useState(false);
+
+  const resetFields = () => {
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+  };
 
   const handleCreateAccount = async () => {
     try {
       if (!email || !password || !confirmPassword) {
-        throw new Error('All fields must be filled out');
+        throw new Error("All fields must be filled out");
       }
-      
+
       if (password !== confirmPassword) {
         setPasswordError(true);
         return;
       }
-  
-      setUserError('');
-  
+
+      setUserError("");
+
       const { user } = await Auth.signUp({
         username: email,
         password: password,
         attributes: {
           email: email,
-        }
+        },
       });
-  
+
       await API.graphql(
         graphqlOperation(createUserMutation, {
           input: {
@@ -45,31 +58,34 @@ const CreateAccountScreen = ({ navigation }) => {
           },
         })
       );
-  
-      navigation.navigate('ConfirmSignUp', { email });
+
+      navigation.navigate("ConfirmSignUp", { email });
     } catch (error) {
-      if (error.code === 'UsernameExistsException') {
-        setUserError('An account with this email already exists. You can log in or reset your password.');
+      if (error.code === "UsernameExistsException") {
+        setUserError(
+          "An account with this email already exists. You can log in or reset your password."
+        );
         setModalVisible(true);
+        resetFields();
       } else {
-        console.error('Error creating account:', error);
+        console.error("Error creating account:", error);
       }
     }
   };
 
   const closeModal = () => {
     setModalVisible(false);
-  }
+  };
 
   const navigateToLoginScreen = () => {
-    navigation.navigate('LoginScreen');
+    navigation.navigate("Login");
     closeModal();
-  }
+  };
 
   const navigateToForgotPasswordScreen = () => {
-    navigation.navigate('ForgotPasswordScreen');
+    navigation.navigate("ForgotPassword");
     closeModal();
-  }
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -82,6 +98,9 @@ const CreateAccountScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create Account</Text>
+      <Text style={styles.greeting}>
+        Welcome {firstName} {lastName}
+      </Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -99,7 +118,7 @@ const CreateAccountScreen = ({ navigation }) => {
           onChangeText={setPassword}
         />
         <Ionicons
-          name={showPassword ? 'eye' : 'eye-off'}
+          name={showPassword ? "eye" : "eye-off"}
           size={24}
           color="gray"
           style={styles.eyeIcon}
@@ -116,7 +135,7 @@ const CreateAccountScreen = ({ navigation }) => {
           onChangeText={setConfirmPassword}
         />
         <Ionicons
-          name={showConfirmPassword ? 'eye' : 'eye-off'}
+          name={showConfirmPassword ? "eye" : "eye-off"}
           size={24}
           color="gray"
           style={styles.eyeIcon}
@@ -130,6 +149,13 @@ const CreateAccountScreen = ({ navigation }) => {
 
       <Button mode="contained" onPress={handleCreateAccount}>
         Create Account
+      </Button>
+      <Button
+        mode="outlined"
+        onPress={() => navigation.goBack()}
+        style={styles.goBackButton}
+      >
+        Go Back
       </Button>
 
       <Modal isVisible={isModalVisible}>
@@ -153,28 +179,39 @@ const CreateAccountScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 24,
   },
   input: {
-    width: '100%',
+    width: "100%",
     padding: 10,
     marginBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
+  },
+  greeting: {
+    fontSize: 18,
+    color: "gray",
+    marginBottom: 24,
+  },
+  createAccountButton: {
+    marginBottom: 16,
+  },
+  goBackButton: {
+    marginTop: 16,
   },
   passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
     marginBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 4,
   },
   passwordInput: {
@@ -182,20 +219,20 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   errorInput: {
-    borderColor: 'red',
+    borderColor: "red",
     borderWidth: 1,
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginBottom: 16,
   },
   modalContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
   },
   linkText: {
-    textDecorationLine: 'underline',
-    color: 'blue',
+    textDecorationLine: "underline",
+    color: "blue",
     marginBottom: 20,
   },
 });

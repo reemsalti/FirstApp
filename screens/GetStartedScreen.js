@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput } from 'react-native';
-import { Button } from 'react-native-paper';
+import React, { useState } from "react";
+import { View, StyleSheet, Text, TextInput } from "react-native";
+import { Button } from "react-native-paper";
 
 const GetStartedScreen = ({ navigation }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   const handleContinue = () => {
-    navigation.navigate('CreateAccount', {
-      firstName,
-      lastName,
-    });
+    if (firstName && lastName) {
+      navigation.navigate("CreateAccount", {
+        firstName,
+        lastName,
+      });
+    } else {
+      alert("Please fill in both first name and last name.");
+    }
   };
 
   const handleLogin = () => {
-    navigation.navigate('LoginScreen');
+    navigation.navigate("Login");
   };
 
   return (
@@ -32,7 +36,11 @@ const GetStartedScreen = ({ navigation }) => {
         value={lastName}
         onChangeText={setLastName}
       />
-      <Button mode="contained" onPress={handleContinue}>
+      <Button
+        mode="contained"
+        onPress={handleContinue}
+        disabled={!(firstName && lastName)}
+      >
         Continue
       </Button>
       <Text style={styles.loginText} onPress={handleLogin}>
@@ -45,26 +53,26 @@ const GetStartedScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 24,
   },
   input: {
-    width: '100%',
+    width: "100%",
     padding: 10,
     marginBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   loginText: {
     marginTop: 16,
-    color: 'blue',
-    textDecorationLine: 'underline',
+    color: "blue",
+    textDecorationLine: "underline",
   },
 });
 

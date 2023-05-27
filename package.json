@@ -22,7 +22,7 @@
     "@react-navigation/stack": "^6.3.16",
     "aws": "^0.0.3-2",
     "aws-amplify": "^5.2.2",
-    "aws-sdk": "^2.1381.0",
+    "aws-sdk": "^2.1383.0",
     "dotenv": "^16.0.3",
     "expo": "~48.0.15",
     "expo-status-bar": "~1.4.4",

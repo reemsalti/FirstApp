@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, TextInput, ScrollView, StyleSheet } from 'react-native';
+import openai from 'openai';
 
 function FitAssistantScreen() {
   const [currentMessage, setCurrentMessage] = useState('');
@@ -14,19 +15,62 @@ function FitAssistantScreen() {
 
   const sendMessageToAPI = async (message) => {
     setIsLoading(true);
+    let botResponse = "";
+    const messages = [
+      {
+        role: 'assistant',
+        content: "AI Fitness Assistant!"
+      },
+      {
+        role: 'user',
+        content: message
+      }
+    ];
+  
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer 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`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages,
+        max_tokens: 150,
+        temperature: 0.5,
+      })
+    };
+  
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', options);
+      const apiResponse = await response.json();
+      console.log('API Response:', apiResponse); // Log the API response
+  
+      if (apiResponse.choices && apiResponse.choices.length > 0) {
+        const aiResponse = apiResponse.choices[0].message.content.trim();
+        botResponse = aiResponse;
+        //res.json({ response: aiResponse });
+      } else {
+        console.error('API chat error: Unexpected response format');
+        res.status(500).json({ response: 'An error occurred while processing your message.' });
+      }
+    } catch (error) {
+      console.error('API chat error:', error);
+      res.status(500).json({ response: 'An error occurred while processing your message.' });
+    }
 
-    // Here, you make your API call and handle the response
+          // Here, you make your API call and handle the response
     // Let's simulate this with a setTimeout function
     setTimeout(() => {
       // Simulated bot response
-      const botResponse = `You said "${message}"`;
 
-      // Add the bot's response to the conversation
+           // Add the bot's response to the conversation
       setConversation(prevConversation => [...prevConversation, { sender: 'bot', message: botResponse }]);
 
       setIsLoading(false);
     }, 1000);
   };
+
 
   const handleSendMessage = () => {
     if (currentMessage) {
