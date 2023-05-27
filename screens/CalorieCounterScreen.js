@@ -10,13 +10,14 @@ import {
 } from "react-native-paper";
 
 import AWS from "aws-sdk";
+import { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '@env'
 
 AWS.config.update({
   region: "us-east-2", // Set your region
   credentials: {
     // Set your credentials
-    accessKeyId: "AKIA3GIGGHDLAA6FXKX2",
-    secretAccessKey: "UpCE/swDNuZLNXZRkbl/hSu8ZoDYuPOjD5oXDE3R",
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
   },
 });
 
