@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, TextInput, ScrollView, StyleSheet } from 'react-native';
 import openai from 'openai';
+import { OPEN_API_KEY } from '@env'
 
 function FitAssistantScreen() {
   const [currentMessage, setCurrentMessage] = useState('');
@@ -31,7 +32,7 @@ function FitAssistantScreen() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer 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`
+        'Authorization': `Bearer ${OPEN_API_KEY}`
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
