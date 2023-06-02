@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TextInput } from "react-native";
 import { Button } from "react-native-paper";
 
-const GetStartedScreen = ({ navigation }) => {
+const GetStartedScreen = ({ navigation, route }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
@@ -23,11 +23,11 @@ const GetStartedScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Get Started</Text>
+      <Text style={styles.title}>Tell us your name</Text>
       <TextInput
         style={styles.input}
         placeholder="First Name"
-        value={firstName}
+        value={route.params?.name || firstName} // Access the name property safely with optional chaining
         onChangeText={setFirstName}
       />
       <TextInput
@@ -40,8 +40,9 @@ const GetStartedScreen = ({ navigation }) => {
         mode="contained"
         onPress={handleContinue}
         disabled={!(firstName && lastName)}
+        style={styles.button}
       >
-        Continue
+        Next
       </Button>
       <Text style={styles.loginText} onPress={handleLogin}>
         Already have an account? Log in
@@ -68,6 +69,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 16,
     backgroundColor: "#fff",
+  },
+  button: {
+    backgroundColor: "lightblue",
   },
   loginText: {
     marginTop: 16,

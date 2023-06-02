@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { Button } from "react-native-paper";
 import Modal from "react-native-modal";
 import { Auth, API, graphqlOperation } from "aws-amplify";
 import { createUser as createUserMutation } from "../graphql/mutations";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { v4 as uuidv4 } from 'uuid';
 
-const CreateAccountScreen = ({ navigation, route }) => {
+
+const CreateAccountScreen = ({ route }) => {
   const { firstName, lastName } = route.params;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,6 +19,8 @@ const CreateAccountScreen = ({ navigation, route }) => {
   const [passwordError, setPasswordError] = useState(false);
   const [userError, setUserError] = useState("");
   const [isModalVisible, setModalVisible] = useState(false);
+
+  const navigation = useNavigation();
 
   const resetFields = () => {
     setEmail("");
@@ -34,14 +33,14 @@ const CreateAccountScreen = ({ navigation, route }) => {
       if (!email || !password || !confirmPassword) {
         throw new Error("All fields must be filled out");
       }
-
+  
       if (password !== confirmPassword) {
         setPasswordError(true);
         return;
       }
-
+  
       setUserError("");
-
+  
       const { user } = await Auth.signUp({
         username: email,
         password: password,
@@ -49,29 +48,42 @@ const CreateAccountScreen = ({ navigation, route }) => {
           email: email,
         },
       });
-
-      await API.graphql(
-        graphqlOperation(createUserMutation, {
-          input: {
-            id: user.userSub,
-            email: email,
-          },
-        })
-      );
-
-      navigation.navigate("ConfirmSignUp", { email });
+  
+      console.log("User from Auth.signUp():", user);  // Print out the user object
+  
+      if (user && user.attributes) {  // Check if the user object and its attributes property exist
+        const time_created = new Date().toISOString();
+        const id = uuid.v4();  // Generate a UUID
+        
+        await API.graphql(
+          graphqlOperation(createUserMutation, {
+            input: {
+              user_id: id, // pass UUID as the id
+              email: email,
+              first_name: firstName,
+              last_name: lastName,
+              time_created: time_created,
+            },
+          })
+        );
+  
+        navigation.navigate("AfterCreateAccountScreen", { firstName });
+      } else {
+        console.error("User object or its attributes property is undefined.");  // Print an error message if they don't
+      }
+  
     } catch (error) {
+      console.error("Error creating account:", error);
       if (error.code === "UsernameExistsException") {
         setUserError(
           "An account with this email already exists. You can log in or reset your password."
         );
         setModalVisible(true);
         resetFields();
-      } else {
-        console.error("Error creating account:", error);
       }
     }
   };
+  
 
   const closeModal = () => {
     setModalVisible(false);

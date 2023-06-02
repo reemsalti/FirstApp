@@ -1,85 +1,55 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { Button } from 'react-native-paper';
-import { Auth } from 'aws-amplify';
-import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
+import React, { useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 
 const ConfirmSignUpScreen = ({ navigation, route }) => {
-  const [value, setValue] = useState('');
-  const { email } = route.params; // Getting the email from the route params
-  const ref = useBlurOnFulfill({ value, cellCount: 6 });
-  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-    value,
-    setValue,
-  });
+  const { firstName } = route.params; // get firstName from navigation params
+  const animationRef = useRef(null);
 
-  const handleConfirmation = async () => {
-    try {
-      await Auth.confirmSignUp(email, value);
-      navigation.navigate('ThankYou');
-    } catch (error) {
-      console.error('Confirmation error:', error);
-    }
+  const handleContinue = () => {
+    animationRef.current.fadeOut(2000).then(endState => navigation.navigate('Dashboard'));
   };
 
-  const handleResendCode = async () => {
-    try {
-      await Auth.resendSignUp(email);
-      alert('Verification code has been sent again!');
-    } catch (error) {
-      console.error('Error resending code: ', error);
-    }
-  };
+  const AnimatedView = Animatable.createAnimatableComponent(View);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Verify your Account</Text>
-      <CodeField
-        ref={ref}
-        {...props}
-        value={value}
-        onChangeText={setValue}
-        cellCount={6}
-        rootStyle={styles.codeFiledRoot}
-        keyboardType="number-pad"
-        textContentType="oneTimeCode"
-        renderCell={({ index, symbol, isFocused }) => (
-          <Text
-            key={index}
-            style={[styles.cell, isFocused && styles.focusCell]}
-            onLayout={getCellOnLayoutHandler(index)}>
-            {symbol || (isFocused ? <Cursor /> : null)}
-          </Text>
-        )}
-      />
-      <Button mode="contained" onPress={handleConfirmation}>
-        Confirm Account
-      </Button>
-      <Button mode="outlined" onPress={handleResendCode}>
-        Resend Code
-      </Button>
-    </View>
+    <TouchableOpacity style={styles.container} onPress={handleContinue}>
+      <AnimatedView ref={animationRef}>
+        <Text style={styles.title}>Thanks for creating an account, {firstName}!</Text>
+        {/* You can replace this View with your balloon animation */}
+        <View style={styles.animationContainer}>
+          {/* Balloon Animation */}
+        </View>
+      </AnimatedView>
+      <Text style={styles.subtitle}>Tap anywhere to continue</Text>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  // Your styles here
-  error: {
-    color: 'red',
-    marginBottom: 16,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#f5f5f5',
   },
-  codeFiledRoot: {marginTop: 20},
-  cell: {
-    width: 40,
-    height: 40,
-    lineHeight: 38,
+  title: {
     fontSize: 24,
-    borderWidth: 2,
-    borderColor: '#00000030',
     textAlign: 'center',
+    marginBottom: 24,
   },
-  focusCell: {
-    borderColor: '#000',
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    position: 'absolute',  // Set position to absolute
+    bottom: 20,  // Position from bottom of the screen
+    width: '100%',  // To make sure the text is centered
+  },
+  animationContainer: {
+    height: 200,
+    width: 200,
+    marginBottom: 50,
   },
 });
 

@@ -53,7 +53,7 @@ const LoginScreen = ({ navigation }) => {
       {errorMessage !== "" && (
         <Text style={styles.errorText}>{errorMessage}</Text>
       )}
-      <Button mode="contained" onPress={handleLogin}>
+      <Button mode="contained" onPress={handleLogin} style={{backgroundColor: '#add8e6'}}>
         Log In
       </Button>
       <Button

@@ -3,12 +3,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import Amplify, { Auth } from "@aws-amplify/core";
+import Amplify from "@aws-amplify/core";
+import Auth from "@aws-amplify/auth";
+
 import awsconfig from "./FirstApp/aws-exports";
 import SecureStorage from "react-native-secure-storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import your screens
+import AfterCreateAccountScreen from "./screens/AfterCreateAccountScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import GetStartedScreen from "./screens/GetStartedScreen";
 import CreateAccountScreen from "./screens/CreateAccountScreen";
@@ -127,7 +130,11 @@ const App = () => {
         const user = await Auth.currentAuthenticatedUser();
         setUser(user);
       } catch (error) {
-        console.error("No authenticated user found", error);
+        if (error === 'not authenticated') {
+          console.log("No authenticated user found");
+        } else {
+          console.error("Unexpected error", error);
+        }
       }
     };
     checkForUser();
@@ -154,6 +161,11 @@ const App = () => {
               component={WelcomeScreen}
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="AfterCreateAccountScreen"
+              component={AfterCreateAccountScreen}
+              options={{ headerShown: false }}
+            />            
             <Stack.Screen
               name="Profile"
               component={ProfileScreen}

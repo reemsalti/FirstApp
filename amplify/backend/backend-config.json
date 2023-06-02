@@ -1,4 +1,20 @@
 {
+  "api": {
+    "testApi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "testLambda"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
   "auth": {
     "FirstApptroubleshoot": {
       "customAuth": false,
@@ -30,6 +46,13 @@
       "service": "Cognito"
     }
   },
+  "function": {
+    "testLambda": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
   "hosting": {
     "amplifyhosting": {
       "providerPlugin": "awscloudformation",
@@ -38,6 +61,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_testLambda_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "testLambda"
+        }
+      ]
+    },
+    "AMPLIFY_function_testLambda_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "testLambda"
+        }
+      ]
+    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {
