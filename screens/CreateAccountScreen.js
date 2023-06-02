@@ -58,7 +58,7 @@ const CreateAccountScreen = ({ route }) => {
         await API.graphql(
           graphqlOperation(createUserMutation, {
             input: {
-              user_id: id, // pass UUID as the id
+              id: id, // pass UUID as the id
               email: email,
               first_name: firstName,
               last_name: lastName,
