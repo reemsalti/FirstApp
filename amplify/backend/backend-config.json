@@ -1,22 +1,29 @@
 {
   "api": {
-    "testApi": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "Name",
-            "Arn"
+    "FirstApp": {
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
           ],
-          "category": "function",
-          "resourceName": "testLambda"
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 30,
+              "description": "api key description"
+            },
+            "authenticationType": "API_KEY"
+          }
         }
-      ],
+      },
       "providerPlugin": "awscloudformation",
-      "service": "API Gateway"
+      "service": "AppSync"
     }
   },
   "auth": {
-    "FirstApptroubleshoot": {
+    "FirstApp": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -47,51 +54,20 @@
     }
   },
   "function": {
-    "testLambda": {
+    "PostCreateAccount": {
       "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "FirstApp"
+        }
+      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
-    }
-  },
-  "hosting": {
-    "amplifyhosting": {
-      "providerPlugin": "awscloudformation",
-      "service": "amplifyhosting",
-      "type": "manual"
-    }
-  },
-  "parameters": {
-    "AMPLIFY_function_testLambda_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "testLambda"
-        }
-      ]
-    },
-    "AMPLIFY_function_testLambda_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "testLambda"
-        }
-      ]
-    },
-    "AMPLIFY_hosting_amplifyhosting_appId": {
-      "usedBy": [
-        {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
-        }
-      ]
-    },
-    "AMPLIFY_hosting_amplifyhosting_type": {
-      "usedBy": [
-        {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
-        }
-      ]
     }
   }
 }

@@ -51,9 +51,9 @@ const CreateAccountScreen = ({ route }) => {
   
       console.log("User from Auth.signUp():", user);  // Print out the user object
   
-      if (user && user.attributes) {  // Check if the user object and its attributes property exist
+      if (user) {  // Check if the user object exist
         const time_created = new Date().toISOString();
-        const id = uuid.v4();  // Generate a UUID
+        const id = uuidv4();  // Generate a UUID
         
         await API.graphql(
           graphqlOperation(createUserMutation, {
@@ -69,7 +69,7 @@ const CreateAccountScreen = ({ route }) => {
   
         navigation.navigate("AfterCreateAccountScreen", { firstName });
       } else {
-        console.error("User object or its attributes property is undefined.");  // Print an error message if they don't
+        console.error("User object is undefined.");  // Print an error message if user object doesn't exist
       }
   
     } catch (error) {
@@ -83,6 +83,7 @@ const CreateAccountScreen = ({ route }) => {
       }
     }
   };
+
   
 
   const closeModal = () => {

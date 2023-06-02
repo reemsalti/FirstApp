@@ -1,58 +1,19 @@
 {
   "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-firstapptroubleshoot-staging-141033-authRole",
-      "UnauthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapptroubleshoot-staging-141033-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapptroubleshoot-staging-141033-authRole",
-      "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-firstapptroubleshoot-staging-141033-deployment",
-      "UnauthRoleName": "amplify-firstapptroubleshoot-staging-141033-unauthRole",
-      "StackName": "amplify-firstapptroubleshoot-staging-141033",
-      "StackId": "arn:aws:cloudformation:us-east-2:769349007574:stack/amplify-firstapptroubleshoot-staging-141033/407560d0-f7e1-11ed-a679-069480f21805",
-      "AmplifyAppId": "d1a3rgxhjye4b1"
-    },
-    "categories": {
-      "auth": {
-        "FirstApptroubleshoot": {}
-      },
-      "hosting": {
-        "amplifyhosting": {
-          "appId": "d1a3rgxhjye4b1",
-          "type": "manual"
-        }
-      }
-    }
-  },
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-firstapptroubleshoot-dev-101622-authRole",
-      "UnauthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapptroubleshoot-dev-101622-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapptroubleshoot-dev-101622-authRole",
+      "AuthRoleName": "amplify-firstapp-staging-214502-authRole",
+      "UnauthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapp-staging-214502-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::769349007574:role/amplify-firstapp-staging-214502-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-firstapptroubleshoot-dev-101622-deployment",
-      "UnauthRoleName": "amplify-firstapptroubleshoot-dev-101622-unauthRole",
-      "StackName": "amplify-firstapptroubleshoot-dev-101622",
-      "StackId": "arn:aws:cloudformation:us-east-1:769349007574:stack/amplify-firstapptroubleshoot-dev-101622/e3bbfdf0-0086-11ee-b03f-0a033c6eab95",
-      "AmplifyAppId": "d2as6jfb5in4o9"
+      "DeploymentBucketName": "amplify-firstapp-staging-214502-deployment",
+      "UnauthRoleName": "amplify-firstapp-staging-214502-unauthRole",
+      "StackName": "amplify-firstapp-staging-214502",
+      "StackId": "arn:aws:cloudformation:us-east-1:769349007574:stack/amplify-firstapp-staging-214502/182446a0-00e7-11ee-995a-0a835979170b",
+      "AmplifyAppId": "d8jx2ax4q875u"
     },
     "categories": {
       "auth": {
-        "FirstApptroubleshoot": {}
-      },
-      "hosting": {
-        "amplifyhosting": {
-          "appId": "d2as6jfb5in4o9",
-          "type": "manual"
-        }
-      },
-      "function": {
-        "testLambda": {
-          "deploymentBucketName": "amplify-firstapptroubleshoot-dev-101622-deployment",
-          "s3Key": "amplify-builds/testLambda-4b687a612f477565564a-build.zip"
-        }
-      },
-      "api": {
-        "testApi": {}
+        "FirstApp": {}
       }
     }
   }
