@@ -30,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleGoBack = () => {
-    navigation.goBack();
+    navigation.navigate("GetStarted");
   };
 
   return (

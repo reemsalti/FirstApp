@@ -3,11 +3,10 @@ import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-nativ
 import { Button } from "react-native-paper";
 import Modal from "react-native-modal";
 import { Auth, API, graphqlOperation } from "aws-amplify";
-import { createUser as createUserMutation } from "../graphql/mutations";
+import { createUserMutation } from '../graphql/mutations'; // Update the import statement
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { v4 as uuidv4 } from 'uuid';
-
+import uuid from 'react-native-uuid';
 
 const CreateAccountScreen = ({ route }) => {
   const { firstName, lastName } = route.params;
@@ -19,7 +18,6 @@ const CreateAccountScreen = ({ route }) => {
   const [passwordError, setPasswordError] = useState(false);
   const [userError, setUserError] = useState("");
   const [isModalVisible, setModalVisible] = useState(false);
-
   const navigation = useNavigation();
 
   const resetFields = () => {
@@ -33,14 +31,14 @@ const CreateAccountScreen = ({ route }) => {
       if (!email || !password || !confirmPassword) {
         throw new Error("All fields must be filled out");
       }
-  
+
       if (password !== confirmPassword) {
         setPasswordError(true);
         return;
       }
-  
+
       setUserError("");
-  
+
       const { user } = await Auth.signUp({
         username: email,
         password: password,
@@ -48,30 +46,32 @@ const CreateAccountScreen = ({ route }) => {
           email: email,
         },
       });
-  
-      console.log("User from Auth.signUp():", user);  // Print out the user object
-  
-      if (user) {  // Check if the user object exist
+
+      console.log("User from Auth.signUp():", user); // Print out the user object
+
+      if (user) {
         const time_created = new Date().toISOString();
-        const id = uuidv4();  // Generate a UUID
-        
-        await API.graphql(
-          graphqlOperation(createUserMutation, {
-            input: {
-              id: id, // pass UUID as the id
-              email: email,
-              first_name: firstName,
-              last_name: lastName,
-              time_created: time_created,
-            },
-          })
-        );
-  
+        const id = uuid.v4();
+
+        const newUser = {
+          id: id,
+          email: email,
+          first_name: firstName,
+          last_name: lastName,
+          time_created: time_created,
+        };
+
+        try {
+          const result = await API.graphql(graphqlOperation(createUserMutation, { input: newUser }));
+          console.log(result);
+        } catch (error) {
+          console.log('Error during DynamoDB entry creation:', error);
+        }
+
         navigation.navigate("AfterCreateAccountScreen", { firstName });
       } else {
-        console.error("User object is undefined.");  // Print an error message if user object doesn't exist
+        console.error("User object is undefined.");
       }
-  
     } catch (error) {
       console.error("Error creating account:", error);
       if (error.code === "UsernameExistsException") {
@@ -83,8 +83,6 @@ const CreateAccountScreen = ({ route }) => {
       }
     }
   };
-
-  
 
   const closeModal = () => {
     setModalVisible(false);
@@ -107,7 +105,7 @@ const CreateAccountScreen = ({ route }) => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create Account</Text>

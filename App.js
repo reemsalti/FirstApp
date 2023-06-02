@@ -9,6 +9,7 @@ import Auth from "@aws-amplify/auth";
 import awsconfig from "./FirstApp/aws-exports";
 import SecureStorage from "react-native-secure-storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API, graphqlOperation } from 'aws-amplify';
 
 // Import your screens
 import AfterCreateAccountScreen from "./screens/AfterCreateAccountScreen";
@@ -36,6 +37,7 @@ const Tab = createBottomTabNavigator();
 const DashboardStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
+
 
 const DashboardStackScreen = () => (
   <DashboardStack.Navigator>
@@ -152,64 +154,64 @@ const App = () => {
   return (
     <AuthContext.Provider value={{ user, setUser, handleLogout }}>
       <NavigationContainer>
-        {user ? (
-          <BottomTabNavigator />
-        ) : (
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Welcome"
-              component={WelcomeScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="AfterCreateAccountScreen"
-              component={AfterCreateAccountScreen}
-              options={{ headerShown: false }}
-            />            
-            <Stack.Screen
-              name="Profile"
-              component={ProfileScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SettingsScreen"
-              component={SettingsScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Dashboard"
-              component={DashboardScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="GetStarted"
-              component={GetStartedScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="CreateAccount"
-              component={CreateAccountScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Login"
-              component={LoginScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="ConfirmSignUp"
-              component={ConfirmSignUpScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="ForgotPassword"
-              component={ForgotPasswordScreen}
-              options={{ headerShown: false }}
-            />
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
-    </AuthContext.Provider>
+          {user ? (
+            <BottomTabNavigator />
+          ) : (
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Welcome"
+                component={WelcomeScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AfterCreateAccountScreen"
+                component={AfterCreateAccountScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SettingsScreen"
+                component={SettingsScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Dashboard"
+                component={DashboardScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="GetStarted"
+                component={GetStartedScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="CreateAccount"
+                component={CreateAccountScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ConfirmSignUp"
+                component={ConfirmSignUpScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ForgotPassword"
+                component={ForgotPasswordScreen}
+                options={{ headerShown: false }}
+              />
+            </Stack.Navigator>
+          )}
+        </NavigationContainer>
+      </AuthContext.Provider>
   );
 };
 
