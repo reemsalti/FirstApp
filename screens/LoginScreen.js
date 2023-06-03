@@ -11,7 +11,7 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       await Auth.signIn(email, password);
-      navigation.navigate("Dashboard");
+      navigation.navigate("DashboardScreen");
     } catch (error) {
       console.error("Error during sign in", error);
       if (

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import FitnessAssistantScreen from './FitnessAssistantScreen';
@@ -60,7 +60,7 @@ function TrainingSchedule({ navigation }) {
   );
 }
 
-const Tab = createBottomTabNavigator();
+
 
 function DashboardScreen() {
   return (
@@ -73,33 +73,8 @@ function DashboardScreen() {
   );
 }
 
-const BottomTabNavigator = () => (
-  <Tab.Navigator
-    screenOptions={({ route }) => ({
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName;
 
-        if (route.name === "Profile") {
-          iconName = focused ? "person-circle" : "person-circle-outline";
-        } else if (route.name === "Home") {
-          iconName = focused ? "home" : "home-outline";
-        } else if (route.name === "Chat") {
-          iconName = focused
-            ? "chatbubble-ellipses"
-            : "chatbubble-ellipses-outline";
-        }
 
-        return <Ionicons name={iconName} size={size} color={color} />;
-      },
-      tabBarActiveTintColor: "tomato",
-      tabBarInactiveTintColor: "gray",
-    })}
-  >
-    <Tab.Screen name="Home" component={DashboardScreen} />
-    <Tab.Screen name="Chat" component={FitnessAssistantScreen} />
-    <Tab.Screen name="Profile" component={ProfileScreen} />
-  </Tab.Navigator>
-);
 
 const styles = StyleSheet.create({
   container: {
@@ -125,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BottomTabNavigator;
+export default DashboardScreen;

@@ -7,7 +7,7 @@ const ConfirmSignUpScreen = ({ navigation, route }) => {
   const animationRef = useRef(null);
 
   const handleContinue = () => {
-    animationRef.current.fadeOut(2000).then(endState => navigation.navigate('Dashboard'));
+    animationRef.current.fadeOut(2000).then(endState => navigation.navigate('DashboardScreen'));
   };
 
   const AnimatedView = Animatable.createAnimatableComponent(View);

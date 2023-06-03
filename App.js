@@ -5,12 +5,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import Amplify from "@aws-amplify/core";
 import Auth from "@aws-amplify/auth";
-
 import awsconfig from "./FirstApp/aws-exports";
-import SecureStorage from "react-native-secure-storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API, graphqlOperation } from 'aws-amplify';
-
+import { Platform } from 'react-native';
 // Import your screens
 import AfterCreateAccountScreen from "./screens/AfterCreateAccountScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
@@ -31,6 +28,7 @@ import { AuthContext } from "./AuthContext"; // import the context
 
 Amplify.configure(awsconfig);
 
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -42,18 +40,8 @@ const ProfileStack = createNativeStackNavigator();
 const DashboardStackScreen = () => (
   <DashboardStack.Navigator>
     <DashboardStack.Screen
-      name="Dashboard"
+      name="DashboardScreen"
       component={DashboardScreen}
-      options={{ headerShown: false }}
-    />
-    <DashboardStack.Screen
-      name="ProfileScreen"
-      component={ProfileScreen}
-      options={{ headerShown: false }}
-    />
-    <DashboardStack.Screen
-      name="LoginScreen"
-      component={LoginScreen}
       options={{ headerShown: false }}
     />
     <DashboardStack.Screen
@@ -77,7 +65,7 @@ const DashboardStackScreen = () => (
 const ChatStackScreen = () => (
   <ChatStack.Navigator>
     <ChatStack.Screen
-      name="Chat"
+      name="ChatScreen"
       component={FitAssistantScreen}
       options={{ headerShown: true }}
     />
@@ -87,8 +75,13 @@ const ChatStackScreen = () => (
 const ProfileStackScreen = () => (
   <ProfileStack.Navigator>
     <ProfileStack.Screen
-      name="Profile"
+      name="ProfileScreen"
       component={ProfileScreen}
+      options={{ headerShown: false }}
+    />
+    <ProfileStack.Screen
+      name="SettingsScreen"
+      component={SettingsScreen}
       options={{ headerShown: false }}
     />
   </ProfileStack.Navigator>
@@ -101,13 +94,17 @@ const BottomTabNavigator = () => (
         let iconName;
 
         if (route.name === "Profile") {
-          iconName = focused ? "person-circle" : "person-circle-outline";
+          iconName = focused
+            ? Platform.OS === 'ios' ? "person-circle" : "md-person-circle"
+            : Platform.OS === 'ios' ? "person-circle-outline" : "md-person-circle-outline";
         } else if (route.name === "Home") {
-          iconName = focused ? "home" : "home-outline";
+          iconName = focused
+            ? Platform.OS === 'ios' ? "home" : "md-home"
+            : Platform.OS === 'ios' ? "home-outline" : "md-home-outline";
         } else if (route.name === "Chat") {
           iconName = focused
-            ? "chatbubble-ellipses"
-            : "chatbubble-ellipses-outline";
+            ? Platform.OS === 'ios' ? "chatbubble-ellipses" : "md-chatbubbles"
+            : Platform.OS === 'ios' ? "chatbubble-ellipses-outline" : "md-chatbubbles-outline";
         }
 
         return <Ionicons name={iconName} size={size} color={color} />;
@@ -157,7 +154,7 @@ const App = () => {
           {user ? (
             <BottomTabNavigator />
           ) : (
-            <Stack.Navigator>
+            <Stack.Navigator initialRouteName="Welcome">
               <Stack.Screen
                 name="Welcome"
                 component={WelcomeScreen}
@@ -166,21 +163,6 @@ const App = () => {
               <Stack.Screen
                 name="AfterCreateAccountScreen"
                 component={AfterCreateAccountScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Profile"
-                component={ProfileScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="SettingsScreen"
-                component={SettingsScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Dashboard"
-                component={DashboardScreen}
                 options={{ headerShown: false }}
               />
               <Stack.Screen
@@ -213,6 +195,7 @@ const App = () => {
         </NavigationContainer>
       </AuthContext.Provider>
   );
+
 };
 
 export default App;
