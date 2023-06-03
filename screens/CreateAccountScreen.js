@@ -3,10 +3,12 @@ import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-nativ
 import { Button } from "react-native-paper";
 import Modal from "react-native-modal";
 import { Auth, API, graphqlOperation } from "aws-amplify";
-import { createUserMutation } from '../graphql/mutations'; // Update the import statement
+import { createUserMutation } from '../graphql/mutations';
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import uuid from 'react-native-uuid';
+
+const emailRegex = /^\S+@\S+\.\S+$/;
 
 const CreateAccountScreen = ({ route }) => {
   const { firstName, lastName } = route.params;
@@ -37,6 +39,14 @@ const CreateAccountScreen = ({ route }) => {
         return;
       }
 
+      if (!emailRegex.test(email)) {
+        throw new Error("Invalid email format");
+      }
+      
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters long");
+      }
+      
       setUserError("");
 
       const { user } = await Auth.signUp({
@@ -61,6 +71,8 @@ const CreateAccountScreen = ({ route }) => {
           time_created: time_created,
         };
 
+        console.log(`newUser: ${newUser}`)
+
         try {
           const result = await API.graphql(graphqlOperation(createUserMutation, { input: newUser }));
           console.log(result);
@@ -68,6 +80,7 @@ const CreateAccountScreen = ({ route }) => {
           console.log('Error during DynamoDB entry creation:', error);
         }
 
+        resetFields(); // Clear input fields
         navigation.navigate("AfterCreateAccountScreen", { firstName });
       } else {
         console.error("User object is undefined.");
@@ -79,10 +92,18 @@ const CreateAccountScreen = ({ route }) => {
           "An account with this email already exists. You can log in or reset your password."
         );
         setModalVisible(true);
-        resetFields();
+        resetFields(); // Clear input fields
+      }
+      else {
+        setUserError(
+          "Error Creating your account. Please contact the Admin"
+        );
+        setModalVisible(true);
+        resetFields(); // Clear input fields
       }
     }
   };
+
 
   const closeModal = () => {
     setModalVisible(false);

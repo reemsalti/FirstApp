@@ -5,7 +5,7 @@ function SettingsScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text>Settings Screen</Text>
-      <Button title="Go back" onPress={() => navigation.navigate('Profile')} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
     </View>
   );
 }
