@@ -1,5 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import FitnessAssistantScreen from './FitnessAssistantScreen';
+import ProfileScreen from "./ProfileScreen";
 
 function CalorieCounter({ navigation }) {
   // Placeholder data
@@ -56,16 +60,46 @@ function TrainingSchedule({ navigation }) {
   );
 }
 
-function DashboardScreen({ navigation }) {
+const Tab = createBottomTabNavigator();
+
+function DashboardScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.greeting}>Dashboard</Text>
-      <CalorieCounter navigation={navigation} />
-      <MealPlan navigation={navigation} />
-      <TrainingSchedule navigation={navigation} />
+      <CalorieCounter />
+      <MealPlan />
+      <TrainingSchedule />
     </View>
   );
 }
+
+const BottomTabNavigator = () => (
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        if (route.name === "Profile") {
+          iconName = focused ? "person-circle" : "person-circle-outline";
+        } else if (route.name === "Home") {
+          iconName = focused ? "home" : "home-outline";
+        } else if (route.name === "Chat") {
+          iconName = focused
+            ? "chatbubble-ellipses"
+            : "chatbubble-ellipses-outline";
+        }
+
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+      tabBarActiveTintColor: "tomato",
+      tabBarInactiveTintColor: "gray",
+    })}
+  >
+    <Tab.Screen name="Home" component={DashboardScreen} />
+    <Tab.Screen name="Chat" component={FitnessAssistantScreen} />
+    <Tab.Screen name="Profile" component={ProfileScreen} />
+  </Tab.Navigator>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -91,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DashboardScreen;
+export default BottomTabNavigator;
